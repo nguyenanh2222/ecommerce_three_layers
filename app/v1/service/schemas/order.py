@@ -1,11 +1,11 @@
 
 from datetime import datetime
 from decimal import Decimal
-
 from pydantic import BaseModel, Field
 
 
 class OrderReq(BaseModel):
+
     total_amount: Decimal = Field(...)
     total_order: int = Field(...)
     product_price: Decimal = Field(...)

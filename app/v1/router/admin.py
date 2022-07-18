@@ -1,25 +1,10 @@
 from fastapi import APIRouter
-from starlette import status
-from dependency_injector.wiring import Provide, inject
-from app.v1.service.schemas.product import ProductRes
-from project.core.schemas import DataResponse
-from project.core.swagger import swagger_response
+from app.v1.router.routers import Tags
+from app.v1.service.admin.analysis import router as analysis_admin_router
+from app.v1.service.admin.product import router as product_admin_router
+from app.v1.service.admin.order import router as order_router
 
-router = APIRouter()
-
-
-@inject
-@router.post(
-    path="/",
-    status_code=status.HTTP_201_CREATED,
-    responses=swagger_response(
-        response_model=DataResponse[ProductRes],
-        success_status_code=status.HTTP_201_CREATED
-    )
-)
-async def create_product():
-    ...
-#     product_create: ProductRes
-#     product_service: ProductRes = Depends(Provide[Container.product_service]))
-# ):
-#     return await product_service.mg_create(user_create)
+router_admin = APIRouter(prefix="/api/v1")
+router_admin.include_router(router=analysis_admin_router, prefix="/admin/analysis", tags=[Tags.admin])
+router_admin.include_router(router=product_admin_router, prefix="/products", tags=[Tags.admin])
+router_admin.include_router(router=order_router, prefix="/orders", tags=[Tags.admin])
