@@ -3,8 +3,8 @@ from fastapi import APIRouter, Query, Body
 from sqlalchemy.engine import CursorResult
 from starlette import status
 
-from app.v1.repos.db.database import SessionLocal
-from app.v1.service.schemas.order import OrderRes, OrderReq
+from db.database import SessionLocal
+from schemas.order import OrderRes, OrderReq
 from project.core.schemas import PageResponse, Sort, DataResponse
 from project.core.swagger import swagger_response
 import order_status

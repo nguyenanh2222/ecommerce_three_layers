@@ -2,8 +2,8 @@ from fastapi import Depends, HTTPException, APIRouter
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from sqlalchemy.orm import Session
 from starlette import status
-from app.v1.repos.db.database import SessionLocal
-from app.v1.repos.db.models.permission import Permission
+from db.database import SessionLocal
+from models.permission import Permission
 
 router = APIRouter()
 security = HTTPBasic()

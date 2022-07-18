@@ -1,4 +1,3 @@
-import math
 from datetime import datetime
 from decimal import Decimal
 
@@ -7,7 +6,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.engine import CursorResult, Row
 from starlette import status
 
-from app.v1.repos.db.database import SessionLocal
+from db.database import SessionLocal
 from project.core.schemas import DataResponse
 from project.core.swagger import swagger_response
 

@@ -1,82 +1,50 @@
 import math
-from fastapi import APIRouter, Query, Path
-from sqlalchemy.engine import CursorResult
+
+from fastapi import APIRouter, HTTPException
 from starlette import status
 
-from app.v1.repos.db.database import SessionLocal
-from app.v1.service.schemas.order import OrderRes
+from app.v1.repos.admin.order import OrderRepository
 from order_status import EOrderStatus
 from project.core.schemas import PageResponse, Sort, DataResponse
-from project.core.swagger import swagger_response
 
 router = APIRouter()
 
 
-@router.get(
-    path="/",
-    status_code=status.HTTP_200_OK,
-    responses=swagger_response(
-        response_model=PageResponse[OrderRes],
-        success_status_code=status.HTTP_200_OK
-    )
-)
-async def get_orders(
-        page: int = Query(1, description="Page"),
-        size: int = Query(20, description="Kích thuớc 1 trang có bao nhiu sản phẩm"),
-        order_id: int = Query(None, description="Mã đơn hàng"),
-        product_name: str = Query(None, description="Tên sản phẩm có trong đơn hàng"),
-        customer_name: str = Query(None, description="Tên khách hàng"),
-        sort_direction: Sort.Direction = Query(None, description="Chiều sắp xếp theo ngày tạo hóa đơn asc|desc")
-):
+class OrderService(OrderRepository):
 
-    query = f"""SELECT * FROM ecommerce.orders o
-    JOIN ecommerce.order_items oi ON o.order_id = oi.order_id """
-    parameters = [order_id, product_name, customer_name]
-    for parameter in parameters:
-        if parameter is not None:
-            query += " WHERE "
-            break
-    if order_id is not None:
-        query += f"order_id = {order_id} AND"
-    if customer_name is not None:
-        query += f" customer_name LIKE '%{customer_name}%' AND"
-    if product_name is not None:
-        query += f" product_name LIKE '%{product_name}%' AND"
-    if query.endswith("AND"):
-        query = query[:-3]
-    if sort_direction is not None:
-        query += f"ORDER BY time_hire {sort_direction}"
-    session = SessionLocal()
-    _rs: CursorResult = session.execute(query)
-    total = _rs.fetchall()
-    total_page = math.ceil(len(total) / size)
-    total_items = len(total)
-    query += f" LIMIT {size} OFFSET {(page - 1) * size}"
-    _rs: CursorResult = session.execute(query)
-    _result = _rs.fetchall()
-    current_page = page
-    session.commit()
-    return PageResponse(data=_result,
-                        total_page=total_page,
-                        total_items=total_items,
-                        current_page=current_page)
+    def get_order_service(self, page: int,
+                          size: int, order_id: int,
+                          product_name: str,
+                          customer_name: str,
+                          sort_direction: Sort.Direction) -> PageResponse:
+        order_repo = OrderRepository().get_order_repo(
+            page=page,
+            size=size,
+            order_id=order_id,
+            product_name=product_name,
+            customer_name=customer_name,
+            sort_direction=sort_direction
+        )
 
+        total_page = math.ceil(len(order_repo) / size)
+        total_items = len(order_repo)
+        current_page = page
 
-@router.put(
-    path="/{id}",
-    status_code=status.HTTP_200_OK,
-    description="Thay đổi trạng thái của đơn hàng"
-)
-async def change_order_status(
-        id: int = Path(..., description="Mã hóa đơn cần thay đổi trạng thái"),
-        next_status: EOrderStatus = Query(..., description="Trạng thái đơn hàng muốn thay đổi"),
-):
-    session = SessionLocal()
-    _rs: CursorResult = session.execute(
-        f""" UPDATE ecommerce.orders SET status = '{next_status}' WHERE order_id = {id} RETURNING *"""
-    )
-    result = _rs.fetchone()
-    session.commit()
-    return DataResponse(data=result)
+        if page and size is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST
+            )
+
+        return PageResponse(data=order_repo,
+                            total_page=total_page,
+                            total_items=total_items,
+                            current_page=current_page)
+
+    def change_order_service(self, order_id: int,
+                             next_status: EOrderStatus) -> DataResponse:
+        order_repo = OrderRepository().change_order_repo(
+            order_id=order_id,
+            next_status=next_status)
+        return DataResponse(data=order_repo)
 
 

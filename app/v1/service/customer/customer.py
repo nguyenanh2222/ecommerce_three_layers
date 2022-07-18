@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Body, Path
-from pydantic import BaseModel, Field
 from sqlalchemy.engine import CursorResult
 from starlette import status
 
-from app.v1.repos.db.database import SessionLocal
-from app.v1.service.schemas.customer import CustomerRes, CustomerReq, CustomerUpdate
+from db.database import SessionLocal
+from schemas.customer import CustomerRes, CustomerReq, CustomerUpdate
 from project.core.schemas import DataResponse
 from project.core.swagger import swagger_response
 

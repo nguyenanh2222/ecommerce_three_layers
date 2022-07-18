@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Body, Query, HTTPException
 from sqlalchemy.engine import CursorResult
 from starlette import status
-from app.v1.repos.db.database import SessionLocal
-from app.v1.service.schemas.associations import CartItemReq
-from app.v1.service.schemas.cart import CartRes
+from db.database import SessionLocal
+from schemas.associations import CartItemReq
+from schemas.cart import CartRes
 from project.core.schemas import DataResponse
 from project.core.swagger import swagger_response
 

@@ -92,7 +92,7 @@ class DataResponse(CustomGenericModel, Generic[TypeX]):
     data: TypeX = None
 
     def __init__(self, data: TypeX, **kwargs: Any):
-        kwargs.update(data=data)
+        kwargs['data'] = data
         super().__init__(**kwargs)
 
 
