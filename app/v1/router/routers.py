@@ -12,6 +12,7 @@ app = FastAPI(
     redoc_url="/redoc",
     default_response_class=ORJSONResponse,
 )
+
 # app.add_middleware(
 #     CORSMiddleware,
 #     allow_origins=["*"],

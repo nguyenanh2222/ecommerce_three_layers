@@ -10,6 +10,23 @@ from sqlalchemy.engine import CursorResult
 router = APIRouter()
 
 
+def repos_revenue():
+    session = SessionLocal()
+    query = f""" SELECT SUM(total_amount), AVG(total_amount),
+    MAX(customer_id), MAX(order_id) 
+    FROM ecommerce.orders o
+    WHERE time_open >= '{start_datetime}' 
+    AND time_open <= '{end_datetime}'
+    GROUP BY order_id 
+    """
+    _rs: CursorResult = session.execute(query)
+
+
+def service_revenue():
+    rs = repos_revenue()
+    # do st
+    return rs
+
 @router.get(
     path="/total",
     status_code=status.HTTP_200_OK,
@@ -23,16 +40,10 @@ async def analysis_revenue_in_period(
         start_datetime: datetime = Query(datetime.strptime("2021-11-29", "%Y-%m-%d")),
         end_datetime: datetime = Query(datetime.strptime("2021-11-29", "%Y-%m-%d"))
 ):
-    session = SessionLocal()
-    query = f""" SELECT SUM(total_amount), AVG(total_amount),
-    MAX(customer_id), MAX(order_id) 
-    FROM ecommerce.orders o
-    WHERE time_open >= '{start_datetime}' 
-    AND time_open <= '{end_datetime}'
-    GROUP BY order_id 
-    """
-    _rs: CursorResult = session.execute(query)
+    _rs = service_revenue()
+
     return DataResponse(date=_rs.fetchall())
+
 
 
 @router.get(
