@@ -9,7 +9,7 @@ class Permission(Base):
     id = Column(Integer,
                 primary_key=True,
                 nullable=False)
-    user_name = Column(String)
+    username = Column(String)
     password = Column(Integer)
     # 1: admin
     # 2: customer

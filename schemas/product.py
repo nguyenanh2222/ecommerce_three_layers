@@ -6,7 +6,7 @@ from starlette import status
 
 
 class ProductReq(BaseModel):
-    name: str = Field(max_length=50, default="AZ111")
+    name: str = Field(max_length=60, default="AZ111")
     quantity: int = Field(gt=0, default=1)
     price: Decimal = Field(gt=0, default=50_000)
     description: str = Field(max_length=500, default="Summer Clothes")

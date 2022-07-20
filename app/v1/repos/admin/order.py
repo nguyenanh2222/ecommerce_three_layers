@@ -11,7 +11,7 @@ class OrderRepository:
                        size: int, order_id: int,
                        product_name: str,
                        customer_name: str,
-                       sort_direction: Sort.Direction) -> List:
+                       sort_direction: Sort.Direction) -> List[Row]:
         query = f"""
     SELECT * 
     FROM ecommerce.orders o
@@ -36,9 +36,8 @@ class OrderRepository:
             query += f" ORDER BY time_open {sort_direction}"
         session: Session = SessionLocal()
         query += f" LIMIT {size} OFFSET {(page - 1) * size}"
-        _rs = session.execute(query)
-        _rs = _rs.fetchall()
-        return _rs
+        rs = session.execute(query).fetchall()
+        return rs
 
     def change_order_repo(self, order_id: int,
                           next_status: EOrderStatus) -> Row:

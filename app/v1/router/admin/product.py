@@ -1,6 +1,8 @@
 from decimal import Decimal
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 from starlette import status
+
+from app.v1.router.admin.permission import get_user
 from app.v1.service.admin.product import ProductService
 from project.core.schemas import DataResponse, PageResponse
 from project.core.schemas import Sort
@@ -27,9 +29,10 @@ def get_product(
         product_id: int = Query(None, description="Product ID"),
         from_price: Decimal = Query(None, description="From price"),
         to_price: Decimal = Query(None, description="To price"),
-        sort_direction: Sort.Direction = Query(None, description="Filter by")
+        sort_direction: Sort.Direction = Query(None, description="Filter by"),
+        service: ProductService = Depends(get_user)
 ) -> PageResponse:
-    productService = ProductService().get_product_service(
+    product_service = ProductService().get_product_service(
         page=page,
         size=size,
         product_id=product_id,
@@ -39,10 +42,10 @@ def get_product(
         to_price=to_price,
         sort_direction=sort_direction)
 
-    return PageResponse(data=productService.data,
-                        total_page=productService.total_page,
-                        total_items=productService.total_items,
-                        current_page=productService.current_page)
+    return PageResponse(data=product_service.data,
+                        total_page=product_service.total_page,
+                        total_items=product_service.total_items,
+                        current_page=product_service.current_page)
 
 
 @router.get(
@@ -54,10 +57,11 @@ def get_product(
         fail_status_code=status.HTTP_404_NOT_FOUND
     )
 )
-def get_product_by_id(product_id: int) -> DataResponse:
-    productService = ProductService().get_product_by_id_service(
+def get_product_by_id(product_id: int,
+                      service: ProductService = Depends(get_user)) -> DataResponse:
+    product_service = ProductService().get_product_by_id_service(
         product_id=product_id)
-    return DataResponse(data=productService)
+    return DataResponse(data=product_service)
 
 
 @router.put(
@@ -69,10 +73,11 @@ def get_product_by_id(product_id: int) -> DataResponse:
         fail_status_code=status.HTTP_400_BAD_REQUEST
     )
 )
-def put_product_by_id(product: ProductReq, product_id: int) -> DataResponse:
-    produdctService = ProductService().put_product_service(
+def put_product_by_id(product: ProductReq, product_id: int,
+                      service: ProductService = Depends(get_user)) -> DataResponse:
+    product_service = ProductService().put_product_service(
         product=product, product_id=product_id)
-    return DataResponse(data=produdctService)
+    return DataResponse(data=product_service)
 
 @router.post(
     path="/",
@@ -83,15 +88,17 @@ def put_product_by_id(product: ProductReq, product_id: int) -> DataResponse:
         fail_status_code=status.HTTP_400_BAD_REQUEST
     )
 )
-def post_product(product: ProductReq) -> DataResponse:
-    produdctService = ProductService().post_product_service(
+def post_product(product: ProductReq,
+                 service: ProductService = Depends(get_user)) -> DataResponse:
+    product_service = ProductService().post_product_service(
         product=product)
-    return DataResponse(data=produdctService)
+    return DataResponse(data=product_service)
 
 @router.delete(
     path="/{product_id}",
     status_code=status.HTTP_204_NO_CONTENT
 )
-def delete_product(product_id: int) -> DataResponse:
-    produtcService = ProductService().delete_product_service(product_id=product_id)
-    return DataResponse(data=produtcService)
+def delete_product(product_id: int,
+                   service: ProductService = Depends(get_user)) -> DataResponse:
+    product_service = ProductService().delete_product_service(product_id=product_id)
+    return DataResponse(data=product_service)

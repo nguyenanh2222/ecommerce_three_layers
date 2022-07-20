@@ -7,7 +7,7 @@ from db.database import SessionLocal
 
 class AnalysisRepository:
 
-    def repos_revenue(self,
+    def calculate_revenue(self,
                       start_time: datetime,
                       end_time: datetime) -> List[Row]:
         # sum, avg group by max and min by period time
@@ -22,8 +22,7 @@ class AnalysisRepository:
         rs = session.execute(query).fetchall()
         return rs
 
-    def repos_line_chart(self,
-                         start_datetime: datetime,
+    def draw_chart(self, start_datetime: datetime,
                          end_datetime: datetime) -> List[Row]:
         # draw line char calculate total amount by period time
         session: Session = SessionLocal()
