@@ -14,7 +14,9 @@ class ProductRepository:
             from_price: Decimal, to_price: Decimal, sort_direction: Sort.Direction) -> List:
         query = f""" SELECT * FROM ecommerce.orders o
         JOIN ecommerce.order_items oi 
-        ON o.order_id = oi.order_id"""
+        ON o.order_id = oi.order_id
+        JOIN ecommerce.products d
+        ON d.product_id = oi.product_id"""
         parameters = [category, product_name, product_id,
                       from_price, to_price, sort_direction]
         for parameter in parameters:
@@ -22,7 +24,7 @@ class ProductRepository:
                 query += " WHERE "
                 break
         if product_id:
-            query += f" product_id = {product_id} AND"
+            query += f" oi.product_id = {product_id} AND"
         if category:
             query += f" category LIKE '%{category}%' AND"
         if product_name:
