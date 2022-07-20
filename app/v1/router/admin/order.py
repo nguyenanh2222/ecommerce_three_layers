@@ -27,7 +27,7 @@ def get_order(
         customer_name: str = Query(None, description="Customer Name"),
         sort_direction: Sort.Direction = Query(None, description="Sort By Time")
 ) -> PageResponse:
-    order_service = OrderService().get_order_service(
+    orderService = OrderService().get_order_service(
         page=page,
         size=size,
         order_id=order_id,
@@ -37,10 +37,10 @@ def get_order(
     )
 
     return PageResponse(
-        data=order_service.data,
-        total_page=order_service.total_page,
-        total_items=order_service.total_items,
-        current_page=order_service.current_page
+        data=orderService.data,
+        total_page=orderService.total_page,
+        total_items=orderService.total_items,
+        current_page=orderService.current_page
     )
 
 

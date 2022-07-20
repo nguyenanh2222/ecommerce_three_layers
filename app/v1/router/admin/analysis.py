@@ -23,10 +23,10 @@ def revenue(time_started: datetime = Query(datetime.strptime(
         "2021-11-29", "%Y-%m-%d")),
         time_ended: datetime = Query(datetime.strptime(
         "2021-11-29", "%Y-%m-%d"))) -> DataResponse:
-    analysis_service = AnalysisService().service_revenue(
+    analysisService = AnalysisService().service_revenue(
         start_time=time_started,
         end_time=time_ended)
-    return DataResponse(data=analysis_service)
+    return DataResponse(data=analysisService)
 
 @router.get(
     path="/linechart",
