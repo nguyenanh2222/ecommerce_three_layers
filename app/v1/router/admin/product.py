@@ -5,7 +5,7 @@ from app.v1.service.admin.product import ProductService
 from project.core.schemas import DataResponse, PageResponse
 from project.core.schemas import Sort
 from project.core.swagger import swagger_response
-from schemas.product import ProductRes
+from schemas.product import ProductRes, ProductReq
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ router = APIRouter()
     responses=swagger_response(
         response_model=DataResponse[ProductRes],
         success_status_code=status.HTTP_200_OK,
-        fail_status_code=status.HTTP_400_BAD_REQUEST
+        fail_status_code=status.HTTP_404_NOT_FOUND
     )
 )
 def get_product(
@@ -29,7 +29,7 @@ def get_product(
         to_price: Decimal = Query(None, description="To price"),
         sort_direction: Sort.Direction = Query(None, description="Filter by")
 ) -> PageResponse:
-    product_service = ProductService().get_product_service(
+    productService = ProductService().get_product_service(
         page=page,
         size=size,
         product_id=product_id,
@@ -39,7 +39,59 @@ def get_product(
         to_price=to_price,
         sort_direction=sort_direction)
 
-    return PageResponse(data=product_service.data,
-                        total_page=product_service.total_page,
-                        total_items=product_service.total_items,
-                        current_page=product_service.current_page)
+    return PageResponse(data=productService.data,
+                        total_page=productService.total_page,
+                        total_items=productService.total_items,
+                        current_page=productService.current_page)
+
+
+@router.get(
+    path="/{product_id}",
+    status_code=status.HTTP_200_OK,
+    responses=swagger_response(
+        response_model=DataResponse[ProductRes],
+        success_status_code=status.HTTP_200_OK,
+        fail_status_code=status.HTTP_404_NOT_FOUND
+    )
+)
+def get_product_by_id(product_id: int) -> DataResponse:
+    productService = ProductService().get_product_by_id_service(
+        product_id=product_id)
+    return DataResponse(data=productService)
+
+
+@router.put(
+    path="/{product_id}",
+    status_code=status.HTTP_200_OK,
+    responses=swagger_response(
+        response_model=DataResponse[ProductRes],
+        success_status_code=status.HTTP_200_OK,
+        fail_status_code=status.HTTP_400_BAD_REQUEST
+    )
+)
+def put_product_by_id(product: ProductReq, product_id: int) -> DataResponse:
+    produdctService = ProductService().put_product_service(
+        product=product, product_id=product_id)
+    return DataResponse(data=produdctService)
+
+@router.post(
+    path="/",
+    status_code=status.HTTP_201_CREATED,
+    responses=swagger_response(
+        response_model=DataResponse[ProductRes],
+        success_status_code=status.HTTP_201_CREATED,
+        fail_status_code=status.HTTP_400_BAD_REQUEST
+    )
+)
+def post_product(product: ProductReq) -> DataResponse:
+    produdctService = ProductService().post_product_service(
+        product=product)
+    return DataResponse(data=produdctService)
+
+@router.delete(
+    path="/{product_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def delete_product(product_id: int) -> DataResponse:
+    produtcService = ProductService().delete_product_service(product_id=product_id)
+    return DataResponse(data=produtcService)

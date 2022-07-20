@@ -46,22 +46,48 @@ class ProductRepository:
     def get_product_by_id_repos(self, product_id: int) -> Row:
         session: Session = SessionLocal()
         query = f'SELECT * FROM products WHERE product_id = {product_id}'
-        _rs = session.execute(query).fetchone()
-        return _rs
+        rs = session.execute(query).fetchone()
+        return rs
 
     def put_product_repos(self, product: ProductReq, product_id: int) -> Row:
         session: Session = SessionLocal()
-        query = f"""UPDATE products SET description = '{product.description}',\
-        name = '{product.name}', quantity = '{product.quantity}',
+        query = f"""UPDATE products SET 
+        name = '{product.name}',
+        description = '{product.description}', 
+        category = '{product.category}',
+        quantity = '{product.quantity}',
         created_time = '{product.created_time}' 
         WHERE product_id = {product_id} RETURNING *"""
-        _rs = session.execute(query).fetchone()
+        rs = session.execute(query).fetchone()
         session.commit()
-        return _rs
+        return rs
+
+
+    def post_product_repos(self, product: ProductReq) -> Row:
+        session: Session = SessionLocal()
+        query = f"""INSERT INTO products (
+        name, 
+        description, 
+        category, 
+        quantity, 
+        price,
+        created_time)
+        VALUES (
+        '{product.name}', 
+        '{product.description}', 
+        '{product.category}', 
+        {product.quantity}, 
+        {product.price},
+        '{product.created_time}')
+        RETURNING * """
+        rs = session.execute(query).fetchone()
+        session.commit()
+        return rs
 
     def delete_product_repos(self, product_id: int) -> Row:
         session: Session = SessionLocal()
-        query = f"DELETE FROM products WHERE product_id = {product_id} RETUNING *"
-        _rs = session.execute(query)
+        query = f"DELETE FROM products WHERE product_id = {product_id} RETURNING *"
+        rs = session.execute(query).fetchone()
         session.commit()
-        return _rs
+        return rs
+
