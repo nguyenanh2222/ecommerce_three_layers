@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List
-from sqlalchemy.engine import CursorResult, Row
+from sqlalchemy.engine import Row
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
 

@@ -16,7 +16,7 @@ class ProductService(ProductRepository):
             from_price: Decimal, to_price: Decimal,
             sort_direction: Sort.Direction) -> PageResponse:
 
-        product_repo = ProductRepository().get_products_repo(
+        products = ProductRepository().get_products_repo(
             page=page,
             size=size,
             product_id=product_id,
@@ -26,14 +26,15 @@ class ProductService(ProductRepository):
             to_price=to_price,
             sort_direction=sort_direction)
 
-        total_page = math.ceil(len(product_repo) / size)
-        total_items = len(product_repo)
+
+        total_page = math.ceil(len(products) / size)
+        total_items = len(products)
         current_page = page
 
         if page and size is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-        return PageResponse(data=product_repo,
+        return PageResponse(data=products,
                             total_page=total_page,
                             total_items=total_items,
                             current_page=current_page)

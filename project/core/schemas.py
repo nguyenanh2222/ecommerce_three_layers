@@ -58,7 +58,6 @@ class CustomBaseModel(BaseModel):
                         datetime.strptime(v, '%Y-%m-%d').timestamp()
                     except Exception:
                         raise ValueError(f'{v} is not valid')
-
         return v
 
 
@@ -92,8 +91,9 @@ class DataResponse(CustomGenericModel, Generic[TypeX]):
     data: TypeX = None
 
     def __init__(self, data: TypeX, **kwargs: Any):
-        kwargs['data'] = data
+        kwargs.update({'data': data})
         super().__init__(**kwargs)
+
 
 
 # PAGING
@@ -124,7 +124,8 @@ class Pageable(BaseModel):
     size: int = Field(100, gt=0)
     page: int = Field(1, gt=0)
 
-    def __init__(self, size: int, page: int, sort: List[Sort]):  # direction: Sort.Direction = Sort.Direction.DESC, order_by=None):
+    def __init__(self, size: int, page: int, sort: List[Sort]):
+        # direction: Sort.Direction = Sort.Direction.DESC, order_by=None):
         super().__init__()
         self.sort = sort
         self.size = size

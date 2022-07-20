@@ -2,7 +2,6 @@ from datetime import datetime
 from fastapi import APIRouter, Depends
 from fastapi.params import Query
 from starlette import status
-
 from app.v1.router.admin.permission import get_user
 from app.v1.service.admin.analysis import AnalysisService
 from project.core.schemas import DataResponse
@@ -24,12 +23,11 @@ router = APIRouter()
 def get_revenue(time_started: datetime = Query(datetime.strptime(
         "2021-11-29", "%Y-%m-%d")),
         time_ended: datetime = Query(datetime.strptime(
-        "2021-11-29", "%Y-%m-%d")),
-        service: AnalysisService = Depends(get_user)) -> DataResponse:
-    analysis_service = AnalysisService().calculate_revenue(
+        "2021-11-29", "%Y-%m-%d"))) -> DataResponse:
+    revenues = AnalysisService().calculate_revenue(
         start_time=time_started,
         end_time=time_ended)
-    return DataResponse(data=analysis_service)
+    return DataResponse(data=revenues)
 
 @router.get(
     path="/linechart",
@@ -45,9 +43,8 @@ def get_chart(
         start_datetime: datetime = Query(
             datetime.strptime("2021-11-29", "%Y-%m-%d")),
         end_datetime: datetime = Query(
-            datetime.strptime("2021-11-29", "%Y-%m-%d")),
-        service: AnalysisService = Depends(get_user)) -> DataResponse:
-    analysis_service = AnalysisService().draw_chart(
+            datetime.strptime("2021-11-29", "%Y-%m-%d"))) -> DataResponse:
+     orders = AnalysisService().draw_chart(
         start_datetime=start_datetime,
         end_datetime=end_datetime)
-    return DataResponse(data=analysis_service)
+     return DataResponse(data=orders)

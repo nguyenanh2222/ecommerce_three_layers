@@ -1,6 +1,6 @@
 from decimal import Decimal
 from typing import List
-from sqlalchemy.engine import Row
+from sqlalchemy.engine import Row, CursorResult
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
 from project.core.schemas import Sort
@@ -11,12 +11,8 @@ class ProductRepository:
     def get_products_repo(
             self, page: int, size: int, product_id: int,
             category: str, product_name: str,
-            from_price: Decimal, to_price: Decimal, sort_direction: Sort.Direction) -> List:
-        query = f""" SELECT * FROM ecommerce.orders o
-        JOIN ecommerce.order_items oi 
-        ON o.order_id = oi.order_id
-        JOIN ecommerce.products d
-        ON d.product_id = oi.product_id"""
+            from_price: Decimal, to_price: Decimal, sort_direction: Sort.Direction) -> List[Row]:
+        query = f""" SELECT * FROM ecommerce.products"""
         parameters = [category, product_name, product_id,
                       from_price, to_price, sort_direction]
         for parameter in parameters:
@@ -24,11 +20,11 @@ class ProductRepository:
                 query += " WHERE "
                 break
         if product_id:
-            query += f" oi.product_id = {product_id} AND"
+            query += f" product_id = {product_id} AND"
         if category:
             query += f" category LIKE '%{category}%' AND"
         if product_name:
-            query += f" product_name LIKE '%{product_name}%' AND"
+            query += f" name LIKE '%{product_name}%' AND"
         if from_price:
             query += f" price >= {from_price} AND"
         if to_price:
@@ -39,9 +35,8 @@ class ProductRepository:
             query += f" ORDER BY time_open {sort_direction}"
         session: Session = SessionLocal()
         query += f" LIMIT {size} OFFSET {(page - 1) * size}"
-        _rs = session.execute(query)
-        _rs = _rs.fetchall()
-        return _rs
+        rs = session.execute(query).fetchall()
+        return rs
 
     def get_product_by_id_repos(self, product_id: int) -> Row:
         session: Session = SessionLocal()

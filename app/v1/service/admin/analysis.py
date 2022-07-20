@@ -11,18 +11,18 @@ class AnalysisService(AnalysisRepository):
 
     def service_revenue(self, start_time: datetime,
                         end_time: datetime) -> DataResponse:
-        analysisRepos = AnalysisRepository()
-        analysisRepos.repos_revenue(
+        revenues = AnalysisRepository()
+        revenues.calculate_revenue(
             start_time=start_time,
             end_time=end_time
         )
-        return DataResponse(data=analysisRepos)
+        return DataResponse(data=revenues)
 
-    def service_line_char(self,
+    def service_draw_char(self,
                           start_time: datetime,
                           end_time: datetime) -> DataResponse:
-        analysisRepos = AnalysisRepository().repos_line_chart(
+        lines = AnalysisRepository().draw_chart(
             start_datetime=start_time,
             end_datetime=end_time)
-        return DataResponse(data=analysisRepos)
+        return DataResponse(data=lines)
 

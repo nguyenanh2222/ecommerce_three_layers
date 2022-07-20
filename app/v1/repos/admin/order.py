@@ -1,6 +1,11 @@
 from typing import List
+
+from fastapi import Depends
 from sqlalchemy.engine import Row
 from sqlalchemy.orm import Session
+
+from app.v1.router.admin.permission import get_user
+from app.v1.service.admin.order import OrderService
 from db.database import SessionLocal
 from order_status import EOrderStatus
 from project.core.schemas import Sort
@@ -11,7 +16,8 @@ class OrderRepository:
                        size: int, order_id: int,
                        product_name: str,
                        customer_name: str,
-                       sort_direction: Sort.Direction) -> List[Row]:
+                       sort_direction: Sort.Direction,
+                       service: OrderService = Depends(get_user)) -> List[Row]:
         query = f"""
     SELECT * 
     FROM ecommerce.orders o
@@ -40,7 +46,8 @@ class OrderRepository:
         return rs
 
     def change_order_repo(self, order_id: int,
-                          next_status: EOrderStatus) -> Row:
+                          next_status: EOrderStatus,
+                          service: OrderService = Depends(get_user)) -> Row:
         session: Session = SessionLocal()
         query = f""" UPDATE ecommerce.orders 
         SET status = '{next_status}' 
