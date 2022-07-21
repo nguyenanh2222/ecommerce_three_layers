@@ -16,7 +16,6 @@ class Orders(Base):
     total_amount = Column(DECIMAL)
     status = Column(String)
     time_open = Column(DATE)
-
     order_items = relationship("OrderItems")
 
 

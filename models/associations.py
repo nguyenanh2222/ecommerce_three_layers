@@ -39,4 +39,4 @@ class OrderItems(Base):
     order_items_id = Column(Integer,
                             primary_key=True,
                             nullable=False)
-    product = relationship("Products")
+    # product = relationship("Products")
