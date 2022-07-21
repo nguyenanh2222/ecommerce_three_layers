@@ -3,7 +3,7 @@ import math
 from fastapi import APIRouter, HTTPException
 from starlette import status
 
-from app.v1.repos.admin.order import OrderRepository
+from app.v1.repos.admin.order import OrderRepositoryAd
 
 from order_status import EOrderStatus
 from project.core.schemas import PageResponse, Sort, DataResponse
@@ -11,7 +11,7 @@ from project.core.schemas import PageResponse, Sort, DataResponse
 router = APIRouter()
 
 
-class OrderService(OrderRepository):
+class OrderServiceAd(OrderRepositoryAd):
 
     def get_order_service(self, page: int,
                           size: int, order_id: int,
@@ -19,7 +19,7 @@ class OrderService(OrderRepository):
                           customer_name: str,
                           sort_direction: Sort.Direction,
                           ) -> PageResponse:
-        orders = OrderRepository().get_order_repo(
+        orders = OrderRepositoryAd().get_order_repo(
             page=page,
             size=size,
             order_id=order_id,
@@ -46,9 +46,9 @@ class OrderService(OrderRepository):
     def change_order_service(self, order_id: int,
                              next_status: EOrderStatus,
                              ) -> DataResponse:
-        order = OrderRepository().change_order_repo(
+        order = OrderRepositoryAd().change_status_repos(
             order_id=order_id,
             next_status=next_status)
         return DataResponse(data=order)
-
+    #
 

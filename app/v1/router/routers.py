@@ -5,6 +5,7 @@ from app.v1.router.admin.order import router as order_router
 from app.v1.router.admin.product import router as product_admin_router
 from app.v1.router.admin.permission import router as admin_permission_router
 from app.v1.router.customer.cart import router as customer_cart_router
+from app.v1.router.customer.order import router as customer_order_router
 
 
 class Tags(str, Enum):
@@ -30,5 +31,8 @@ router_admin.include_router(router=admin_permission_router,
 
 router_customer = APIRouter(prefix="/api/customer/v1")
 router_customer.include_router(router=customer_cart_router,
+                               prefix="/carts",
+                               tags=[Tags.customer])
+router_customer.include_router(router=customer_order_router,
                                prefix="/orders",
                                tags=[Tags.customer])

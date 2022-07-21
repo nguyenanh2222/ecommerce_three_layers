@@ -3,7 +3,7 @@ from fastapi.params import Query, Depends
 from starlette import status
 
 from app.v1.router.admin.permission import get_user
-from app.v1.service.admin.order import OrderService
+from app.v1.service.admin.order import OrderServiceAd
 from order_status import EOrderStatus
 from project.core.schemas import DataResponse, PageResponse, Sort
 from project.core.swagger import swagger_response
@@ -31,7 +31,7 @@ def get_order(
         # _authorization: Optional[str] = Header(None),
         service=Depends(get_user)
 ) -> PageResponse:
-    orders = OrderService().get_order_service(
+    orders = OrderServiceAd().get_order_service(
         page=page,
         size=size,
         order_id=order_id,
@@ -61,7 +61,7 @@ def get_order(
 def change_order(order_id: int,
                  next_status: EOrderStatus,
                  service=Depends(get_user)) -> DataResponse:
-    order = OrderService().change_order_service(
+    order = OrderServiceAd().change_order_service(
         order_id=order_id,
         next_status=next_status)
     return DataResponse(data=order)

@@ -4,6 +4,7 @@ from starlette import status
 
 from app.v1.repos.customer.cart import CartRepository
 from models.associations import CartItems
+from project.core.schemas import DataResponse
 from schemas.associations import CartItemReq
 
 
@@ -11,7 +12,7 @@ from schemas.associations import CartItemReq
 
 class CartService(CartRepository):
 
-    def get_cart_service(self, customer_id: int):
+    def get_cart_service(self, customer_id: int)-> DataResponse:
         cart = CartRepository().get_cart_repo(customer_id=customer_id)
         if cart:
             cart_items = CartRepository().get_cart_items_repo(cart_id=cart['cart_id'])
@@ -20,7 +21,7 @@ class CartService(CartRepository):
         cart = {'customer_id': cart['customer_id'],
                 'cart_id': cart['cart_id'],
                 'cart_item': cart_items}
-        return cart
+        return DataResponse(data=cart)
 
     def insert_item_in_cart_items_service(self, customer_id: int, item: CartItemReq):
         cart = CartRepository().get_cart_repo(customer_id=customer_id)
