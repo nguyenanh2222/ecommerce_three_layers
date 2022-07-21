@@ -1,10 +1,13 @@
 import math
 from fastapi import HTTPException
 from starlette import status
+
+from app.v1.repos.admin.product import ProductRepository
 from app.v1.repos.customer.order import OrderRepository
 from app.v1.repos.customer.cart import CartRepository
 from order_status import EOrderStatus
 from project.core.schemas import Sort, PageResponse, DataResponse
+from schemas.order import OrderReq
 
 
 class OrderService(CartRepository):
@@ -44,6 +47,24 @@ class OrderService(CartRepository):
         order = OrderRepository().change_status_repos(order_id=order_id,
                                                         next_status=next_status)
         return DataResponse(data=order)
+
+    def place_order(self, customer_id: int):
+        cart_id = CartRepository().get_cart_repo(customer_id=customer_id)['cart_id']
+        order = OrderRepository().insert_order(customer_id=customer_id, cart_id=cart_id)
+        order_item = OrderRepository().insert_order_item(order['order_id'])
+        product_quantity = OrderRepository().update_product_quantity(order_item["product_id"])
+        del_cart_item = OrderRepository().delete_item_in_cart_items_repo(customer_id=customer_id)
+
+
+
+
+
+
+
+
+
+
+
 
 
 

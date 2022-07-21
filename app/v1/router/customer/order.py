@@ -59,7 +59,7 @@ def get_order(
 def change_order(order_id: int,
                  next_status: EOrderStatus,
                  service=Depends(get_user)) -> DataResponse:
-    order = OrderService().change_order_service(
+    order = OrderService().change_status_service(
         order_id=order_id,
         next_status=next_status)
     return DataResponse(data=order)

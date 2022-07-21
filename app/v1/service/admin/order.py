@@ -1,10 +1,7 @@
 import math
-
 from fastapi import APIRouter, HTTPException
 from starlette import status
-
 from app.v1.repos.admin.order import OrderRepositoryAd
-
 from order_status import EOrderStatus
 from project.core.schemas import PageResponse, Sort, DataResponse
 
@@ -50,5 +47,5 @@ class OrderServiceAd(OrderRepositoryAd):
             order_id=order_id,
             next_status=next_status)
         return DataResponse(data=order)
-    #
+
 
