@@ -15,7 +15,6 @@ class ProductService(ProductRepository):
             category: str, product_name: str,
             from_price: Decimal, to_price: Decimal,
             sort_direction: Sort.Direction) -> PageResponse:
-
         products = ProductRepository().get_products_repo(
             page=page,
             size=size,
@@ -25,7 +24,6 @@ class ProductService(ProductRepository):
             from_price=from_price,
             to_price=to_price,
             sort_direction=sort_direction)
-
 
         total_page = math.ceil(len(products) / size)
         total_items = len(products)
@@ -40,20 +38,20 @@ class ProductService(ProductRepository):
                             current_page=current_page)
 
     def get_product_by_id_service(self, product_id: int) -> DataResponse:
-        product_repo = ProductRepository().get_product_by_id_repos(
+        product = ProductRepository().get_product_by_id_repos(
             product_id=product_id)
-        return DataResponse(data=product_repo)
+        return DataResponse(data=product)
 
     def put_product_service(self, product: ProductReq, product_id: int) -> DataResponse:
-        product_repo = ProductRepository().put_product_repos(
+        product = ProductRepository().put_product_repos(
             product=product, product_id=product_id)
-        return DataResponse(data=product_repo)
+        return DataResponse(data=product)
 
     def post_product_service(self, product: ProductReq) -> DataResponse:
-        product_repo = ProductRepository().post_product_repos(
+        product = ProductRepository().post_product_repos(
             product=product)
-        return DataResponse(data=product_repo)
+        return DataResponse(data=product)
 
     def delete_product_service(self, product_id: int) -> DataResponse:
-        product_repo = ProductRepository().delete_product_repos(product_id=product_id)
-        return DataResponse(data=product_repo)
+        product = ProductRepository().delete_product_repos(product_id=product_id)
+        return DataResponse(data=product)

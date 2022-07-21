@@ -32,20 +32,21 @@ def get_product(
         sort_direction: Sort.Direction = Query(None, description="Filter by"),
         service: ProductService = Depends(get_user)
 ) -> PageResponse:
-    product_service = ProductService().get_product_service(
+    products = ProductService().get_product_service(
         page=page,
         size=size,
         product_id=product_id,
         category=category,
         product_name=product_name,
         from_price=from_price,
+
         to_price=to_price,
         sort_direction=sort_direction)
 
-    return PageResponse(data=product_service.data,
-                        total_page=product_service.total_page,
-                        total_items=product_service.total_items,
-                        current_page=product_service.current_page)
+    return PageResponse(data=products.data,
+                        total_page=products.total_page,
+                        total_items=products.total_items,
+                        current_page=products.current_page)
 
 
 @router.get(
@@ -59,9 +60,9 @@ def get_product(
 )
 def get_product_by_id(product_id: int,
                       service: ProductService = Depends(get_user)) -> DataResponse:
-    product_service = ProductService().get_product_by_id_service(
+    product = ProductService().get_product_by_id_service(
         product_id=product_id)
-    return DataResponse(data=product_service)
+    return DataResponse(data=product)
 
 
 @router.put(
@@ -75,13 +76,14 @@ def get_product_by_id(product_id: int,
 )
 def put_product_by_id(product: ProductReq, product_id: int,
                       service: ProductService = Depends(get_user)) -> DataResponse:
-    product_service = ProductService().put_product_service(
+    product = ProductService().put_product_service(
         product=product, product_id=product_id)
-    return DataResponse(data=product_service)
+    return DataResponse(data=product)
 
 @router.post(
     path="/",
     status_code=status.HTTP_201_CREATED,
+
     responses=swagger_response(
         response_model=DataResponse[ProductRes],
         success_status_code=status.HTTP_201_CREATED,
@@ -90,9 +92,10 @@ def put_product_by_id(product: ProductReq, product_id: int,
 )
 def post_product(product: ProductReq,
                  service: ProductService = Depends(get_user)) -> DataResponse:
-    product_service = ProductService().post_product_service(
+    product = ProductService().post_product_service(
         product=product)
-    return DataResponse(data=product_service)
+    return DataResponse(data=product)
+
 
 @router.delete(
     path="/{product_id}",
@@ -100,5 +103,5 @@ def post_product(product: ProductReq,
 )
 def delete_product(product_id: int,
                    service: ProductService = Depends(get_user)) -> DataResponse:
-    product_service = ProductService().delete_product_service(product_id=product_id)
-    return DataResponse(data=product_service)
+    product = ProductService().delete_product_service(product_id=product_id)
+    return DataResponse(data=product)

@@ -29,9 +29,9 @@ def get_order(
         customer_name: str = Query(None, description="Customer Name"),
         sort_direction: Sort.Direction = Query(None, description="Sort By Time"),
         # _authorization: Optional[str] = Header(None),
-        service: OrderService = Depends(get_user)
+        service=Depends(get_user)
 ) -> PageResponse:
-    order_service = OrderService().get_order_service(
+    orders = OrderService().get_order_service(
         page=page,
         size=size,
         order_id=order_id,
@@ -40,10 +40,10 @@ def get_order(
         sort_direction=sort_direction
     )
     return PageResponse(
-        data=order_service.data,
-        total_page=order_service.total_page,
-        total_items=order_service.total_items,
-        current_page=order_service.current_page
+        data=orders.data,
+        total_page=orders.total_page,
+        total_items=orders.total_items,
+        current_page=orders.current_page
     )
 
 
@@ -57,12 +57,11 @@ def get_order(
         fail_status_code=status.HTTP_404_NOT_FOUND
     )
 
-
 )
 def change_order(order_id: int,
                  next_status: EOrderStatus,
-                 service: OrderService = Depends(get_user)) -> DataResponse:
-    order_service = OrderService().change_order_service(
+                 service=Depends(get_user)) -> DataResponse:
+    order = OrderService().change_order_service(
         order_id=order_id,
         next_status=next_status)
-    return DataResponse(data=order_service)
+    return DataResponse(data=order)
