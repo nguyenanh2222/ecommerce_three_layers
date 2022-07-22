@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Query, Depends
 from starlette import status
-
-from app.v1.router.admin.permission import get_user
-from app.v1.service.customer.order import OrderService
+from app.v2.router.admin.permission import get_user
+from app.v2.service.customer.order import OrderService
 from order_status import EOrderStatus
 from project.core.schemas import DataResponse, PageResponse, Sort
 from project.core.swagger import swagger_response

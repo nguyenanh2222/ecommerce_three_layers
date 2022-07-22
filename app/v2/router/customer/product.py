@@ -1,9 +1,8 @@
 from decimal import Decimal
 from fastapi import APIRouter, Query, Depends
 from starlette import status
-
-from app.v1.router.admin.permission import get_user
-from app.v1.service.admin.product import ProductService
+from app.v2.router.admin.permission import get_user
+from app.v2.service.admin.product import ProductService
 from project.core.schemas import DataResponse, PageResponse
 from project.core.schemas import Sort
 from project.core.swagger import swagger_response

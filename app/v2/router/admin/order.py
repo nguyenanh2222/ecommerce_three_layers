@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter
+from fastapi.params import Query, Depends
 from starlette import status
-
-from app.v1.router.admin.permission import get_user
-from app.v1.service.customer.order import OrderService
+from app.v2.router.admin.permission import get_user
+from app.v2.service.admin.order import OrderServiceAd
 from order_status import EOrderStatus
 from project.core.schemas import DataResponse, PageResponse, Sort
 from project.core.swagger import swagger_response
@@ -30,7 +30,7 @@ def get_order(
         # _authorization: Optional[str] = Header(None),
         service=Depends(get_user)
 ) -> PageResponse:
-    orders = OrderService().get_order_service(
+    orders = OrderServiceAd().get_order_service(
         page=page,
         size=size,
         order_id=order_id,
@@ -44,6 +44,7 @@ def get_order(
         total_items=orders.total_items,
         current_page=orders.current_page
     )
+
 
 @router.put(
     path="/{order_id}",
@@ -59,18 +60,7 @@ def get_order(
 def change_order(order_id: int,
                  next_status: EOrderStatus,
                  service=Depends(get_user)) -> DataResponse:
-    order = OrderService().change_status_service(
+    order = OrderServiceAd().change_order_service(
         order_id=order_id,
         next_status=next_status)
     return DataResponse(data=order)
-
-
-@router.get(
-    path="/place_order",
-    status_code=status.HTTP_200_OK
-)
-def place_order(customer_id: int,
-                service=Depends(get_user)) -> DataResponse:
-    order = OrderService().place_order(customer_id=customer_id)
-    return DataResponse(data=order)
-

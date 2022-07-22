@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Body, Depends
 from starlette import status
-
-from app.v1.repos.customer import CustomerRepository
-from app.v1.router.admin.permission import get_user
-from app.v1.service.customer.customer import CustomerService
+from app.v2.repos.customer import CustomerRepository
+from app.v2.router.admin.permission import get_user
+from app.v2.service.customer.customer import CustomerService
 from project.core.schemas import DataResponse
 from project.core.swagger import swagger_response
 from schemas.customer import CustomerReq, CustomerRes

@@ -1,9 +1,8 @@
 from decimal import Decimal
 from fastapi import APIRouter, Query, Depends
 from starlette import status
-
-from app.v1.router.admin.permission import get_user
-from app.v1.service.admin.product import ProductService
+from app.v2.router.admin.permission import get_user
+from app.v2.service.admin.product import ProductService
 from project.core.schemas import DataResponse, PageResponse
 from project.core.schemas import Sort
 from project.core.swagger import swagger_response
@@ -78,4 +77,30 @@ def put_product_by_id(product: ProductReq, product_id: int,
                       service: ProductService = Depends(get_user)) -> DataResponse:
     product = ProductService().put_product_service(
         product=product, product_id=product_id)
+    return DataResponse(data=product)
+
+@router.post(
+    path="/",
+    status_code=status.HTTP_201_CREATED,
+
+    responses=swagger_response(
+        response_model=DataResponse[ProductRes],
+        success_status_code=status.HTTP_201_CREATED,
+        fail_status_code=status.HTTP_400_BAD_REQUEST
+    )
+)
+def post_product(product: ProductReq,
+                 service: ProductService = Depends(get_user)) -> DataResponse:
+    product = ProductService().post_product_service(
+        product=product)
+    return DataResponse(data=product)
+
+
+@router.delete(
+    path="/{product_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def delete_product(product_id: int,
+                   service: ProductService = Depends(get_user)) -> DataResponse:
+    product = ProductService().delete_product_service(product_id=product_id)
     return DataResponse(data=product)

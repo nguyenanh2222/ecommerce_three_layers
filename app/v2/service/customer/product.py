@@ -1,9 +1,8 @@
 import math
 from decimal import Decimal
-
 from fastapi import HTTPException
 from starlette import status
-from app.v1.repos.product import ProductRepository
+from app.v2.repos.product import ProductRepository
 from project.core.schemas import Sort, PageResponse, DataResponse
 from schemas.product import ProductReq
 

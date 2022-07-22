@@ -1,9 +1,8 @@
 import math
 from decimal import Decimal
-
 from fastapi import HTTPException
 from starlette import status
-from app.v1.repos.product import ProductRepository
+from app.v2.repos.product import ProductRepository
 from project.core.schemas import Sort, PageResponse, DataResponse
 from schemas.product import ProductReq
 
@@ -45,4 +44,13 @@ class ProductService(ProductRepository):
     def put_product_service(self, product: ProductReq, product_id: int) -> DataResponse:
         product = ProductRepository().put_product_repos(
             product=product, product_id=product_id)
+        return DataResponse(data=product)
+
+    def post_product_service(self, product: ProductReq) -> DataResponse:
+        product = ProductRepository().post_product_repos(
+            product=product)
+        return DataResponse(data=product)
+
+    def delete_product_service(self, product_id: int) -> DataResponse:
+        product = ProductRepository().delete_product_repos(product_id=product_id)
         return DataResponse(data=product)

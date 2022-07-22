@@ -1,9 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends
 from starlette import status
-
-from app.v1.router.admin.permission import get_user
-from app.v1.service.customer.cart import CartService
+from app.v2.router.admin.permission import get_user
+from app.v2.service.customer.cart import CartService
 from schemas.associations import CartItemReq
 
 router = APIRouter()
