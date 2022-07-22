@@ -49,11 +49,24 @@ class OrderService(CartRepository):
         return DataResponse(data=order)
 
     def place_order(self, customer_id: int):
-        cart_id = CartRepository().get_cart_repo(customer_id=customer_id)['cart_id']
-        order = OrderRepository().insert_order(customer_id=customer_id, cart_id=cart_id)
-        order_item = OrderRepository().insert_order_item(order['order_id'])
-        product_quantity = OrderRepository().update_product_quantity(order_item["product_id"])
-        del_cart_item = OrderRepository().delete_item_in_cart_items_repo(customer_id=customer_id)
+        cart_id = CartRepository().get_cart_repo(
+            customer_id=customer_id)['cart_id']
+        if cart_id:
+            order = OrderRepository().insert_order(
+                customer_id=customer_id, cart_id=cart_id)
+            if order:
+                order_item = OrderRepository().insert_order_item(
+                    order_id=order['order_id'])
+                if order_item:
+                    product_quantity = OrderRepository().update_product_quantity(
+                        order_item["product_id"])
+                    if product_quantity:
+                        del_cart_item = OrderRepository().delete_item_in_cart_items_repo(
+                            customer_id=customer_id)
+        else:
+            raise status.HTTP_404_NOT_FOUND
+
+
 
 
 

@@ -1,16 +1,13 @@
 from datetime import datetime
-from decimal import Decimal
 from typing import List
 from sqlalchemy.engine import Row
 from sqlalchemy.orm import Session
-from app.v1.repos.customer.cart import CartRepository
 from db.database import SessionLocal
-from models.associations import OrderItems
 from order_status import EOrderStatus
 from project.core.schemas import Sort
 
 
-class OrderRepository:
+class OrderRepositoryAd:
     def get_order_repo(self,
                        page: int,
                        size: int,

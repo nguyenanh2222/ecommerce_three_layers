@@ -11,7 +11,8 @@ class ProductRepository:
     def get_products_repo(
             self, page: int, size: int, product_id: int,
             category: str, product_name: str,
-            from_price: Decimal, to_price: Decimal, sort_direction: Sort.Direction) -> List[Row]:
+            from_price: Decimal, to_price: Decimal,
+            sort_direction: Sort.Direction) -> List[Row]:
         query = f""" SELECT * FROM ecommerce.products"""
         parameters = [category, product_name, product_id,
                       from_price, to_price, sort_direction]
@@ -81,7 +82,8 @@ class ProductRepository:
 
     def delete_product_repos(self, product_id: int) -> Row:
         session: Session = SessionLocal()
-        query = f"DELETE FROM products WHERE product_id = {product_id} RETURNING *"
+        query = f"""DELETE FROM products
+                WHERE product_id = {product_id} RETURNING *"""
         rs = session.execute(query).fetchone()
         session.commit()
         return rs

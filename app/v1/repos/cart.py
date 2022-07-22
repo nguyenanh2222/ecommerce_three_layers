@@ -3,7 +3,6 @@ from sqlalchemy.engine import Row
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
 from models.associations import CartItems
-from schemas.associations import CartItemReq
 
 
 class CartRepository:
@@ -16,7 +15,6 @@ class CartRepository:
         WHERE c.customer_id = {customer_id}"""
         rs = session.execute(query).fetchone()
         return rs
-
 
     def get_cart_items_repo(self, cart_id: int) -> List[Row]:
         session: Session = SessionLocal()
@@ -38,10 +36,8 @@ class CartRepository:
         rs = session.execute(query)
         return rs
 
-    def insert_item_to_cart_items_repo(self,
-                               item: CartItems) -> List[Row]:
+    def insert_item_to_cart_items_repo(self, item: CartItems) -> List[Row]:
         session: Session = SessionLocal()
-        # -> total_price auto calculate
         query = f"""INSERT INTO cart_items 
         (cart_id,
         product_name, 
@@ -62,8 +58,7 @@ class CartRepository:
         session.commit()
         return rs
 
-    def update_item_in_cart_items_repo(self,
-                                  item: CartItems) -> Row:
+    def update_item_in_cart_items_repo(self, item: CartItems) -> Row:
         session: Session = SessionLocal()
         query = f""" UPDATE cart_items
         SET (
@@ -78,9 +73,7 @@ class CartRepository:
         session.commit()
         return rs
 
-
-    def delete_item_in_cart_items_repo(self,
-                                  cart_items_id: int) -> Row:
+    def delete_item_in_cart_items_repo(self, cart_items_id: int) -> Row:
         session: Session = SessionLocal()
         query = f"""
         DELETE FROM cart_items 

@@ -63,3 +63,16 @@ def change_order(order_id: int,
         order_id=order_id,
         next_status=next_status)
     return DataResponse(data=order)
+
+
+@router.put(
+    path="/place_order",
+    status_code=status.HTTP_200_OK
+)
+def place_order(customer_id: int) -> bool:
+    order = OrderService().place_order(customer_id=customer_id)
+    print(order)
+    if order:
+        return True
+    else:
+        return False
