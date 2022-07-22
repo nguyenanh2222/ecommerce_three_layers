@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.engine import Row
 from starlette import status
 
-from app.v1.repos.customer.cart import CartRepository
+from app.v1.repos.cart import CartRepository
 from models.associations import CartItems
 from project.core.schemas import DataResponse
 from schemas.associations import CartItemReq

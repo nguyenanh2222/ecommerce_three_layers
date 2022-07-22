@@ -1,13 +1,10 @@
 import math
 from fastapi import HTTPException
 from starlette import status
-
-from app.v1.repos.admin.product import ProductRepository
-from app.v1.repos.customer.order import OrderRepository
-from app.v1.repos.customer.cart import CartRepository
+from app.v1.repos.order import OrderRepository
+from app.v1.repos.cart import CartRepository
 from order_status import EOrderStatus
 from project.core.schemas import Sort, PageResponse, DataResponse
-from schemas.order import OrderReq
 
 
 class OrderService(CartRepository):

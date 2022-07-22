@@ -7,7 +7,7 @@ from order_status import EOrderStatus
 from project.core.schemas import Sort
 
 
-class OrderRepositoryAd:
+class OrderRepository:
     def get_order_repo(self,
                        page: int,
                        size: int,

@@ -1,6 +1,6 @@
 from datetime import datetime
 from fastapi import APIRouter, Depends
-from app.v1.repos.admin.analysis import AnalysisRepository
+from app.v1.repos.analysis import AnalysisRepository
 from app.v1.router.admin.permission import get_user
 from project.core.schemas import DataResponse
 
