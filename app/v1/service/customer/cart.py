@@ -35,7 +35,7 @@ class CartService(CartRepository):
                                                                      quantity=item.quantity,
                                                                      price=item.price,
                                                                      product_id=item.product_id,
-                                                                     total_price= total_price)
+                                                                     total_price=total_price)
                                                                  )
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
