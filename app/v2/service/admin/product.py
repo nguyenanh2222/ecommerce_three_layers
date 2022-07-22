@@ -31,26 +31,26 @@ class ProductService(ProductRepository):
         if page and size is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
-        return PageResponse(data=products,
-                            total_page=total_page,
-                            total_items=total_items,
-                            current_page=current_page)
+        return products
+                            # total_page=total_page,
+                            # total_items=total_items,
+                            # current_page=current_page)
 
-    def get_product_by_id_service(self, product_id: int) -> DataResponse:
-        product = ProductRepository().get_product_by_id_repos(
-            product_id=product_id)
-        return DataResponse(data=product)
-
-    def put_product_service(self, product: ProductReq, product_id: int) -> DataResponse:
-        product = ProductRepository().put_product_repos(
-            product=product, product_id=product_id)
-        return DataResponse(data=product)
-
-    def post_product_service(self, product: ProductReq) -> DataResponse:
-        product = ProductRepository().post_product_repos(
-            product=product)
-        return DataResponse(data=product)
-
-    def delete_product_service(self, product_id: int) -> DataResponse:
-        product = ProductRepository().delete_product_repos(product_id=product_id)
-        return DataResponse(data=product)
+    # def get_product_by_id_service(self, product_id: int) -> DataResponse:
+    #     product = ProductRepository().get_product_by_id_repos(
+    #         product_id=product_id)
+    #     return DataResponse(data=product)
+    #
+    # def put_product_service(self, product: ProductReq, product_id: int) -> DataResponse:
+    #     product = ProductRepository().put_product_repos(
+    #         product=product, product_id=product_id)
+    #     return DataResponse(data=product)
+    #
+    # def post_product_service(self, product: ProductReq) -> DataResponse:
+    #     product = ProductRepository().post_product_repos(
+    #         product=product)
+    #     return DataResponse(data=product)
+    #
+    # def delete_product_service(self, product_id: int) -> DataResponse:
+    #     product = ProductRepository().delete_product_repos(product_id=product_id)
+    #     return DataResponse(data=product)
