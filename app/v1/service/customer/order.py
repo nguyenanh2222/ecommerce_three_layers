@@ -3,6 +3,7 @@ from fastapi import HTTPException
 from starlette import status
 from app.v1.repos.order import OrderRepository
 from app.v1.repos.cart import CartRepository
+from app.v1.repos.product import ProductRepository
 from order_status import EOrderStatus
 from project.core.schemas import Sort, PageResponse, DataResponse
 
@@ -50,18 +51,60 @@ class OrderService(CartRepository):
             customer_id=customer_id)['cart_id']
         if cart_id:
             order = OrderRepository().insert_order(
-                customer_id=customer_id, cart_id=cart_id)
+                    customer_id=customer_id, cart_id=cart_id)
             if order:
-                order_item = OrderRepository().insert_order_item(
-                    order_id=order['order_id'])
-                if order_item:
-                    product_quantity = OrderRepository().update_product_quantity(
-                        order_item["product_id"])
-                    if product_quantity:
-                        del_cart_item = OrderRepository().delete_item_in_cart_items_repo(
-                            customer_id=customer_id)
-        else:
-            raise status.HTTP_404_NOT_FOUND
+                order_items = OrderRepository().insert_order_item(
+                            order_id=order['order_id'])
+                products_id = []
+                for i in range(len(order_items)):
+                        if order_items[i]['product_id'] not in products_id:
+                            products_id.append(order_items[i]['product_id'])
+                for product_id in products_id:
+                    _product = ProductRepository().update_product_quantity(product_id=product_id)
+                _cart_item = CartRepository().delete_item_in_cart_items_repository(customer_id=customer_id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        # if cart_id:
+        #
+        #     if order:
+        #
+        #         print(order['order_id'])
+        #
+        #             if product_quantity:
+        #                 del_cart_item = OrderRepository().delete_item_in_cart_items_repo(
+        #                     customer_id=customer_id)
+        # else:
+        #     raise status.HTTP_404_NOT_FOUND
 
 
 

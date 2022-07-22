@@ -8,6 +8,7 @@ from project.core.schemas import Sort
 
 
 class OrderRepository:
+
     def get_order_repo(self,
                        page: int,
                        size: int,
@@ -89,20 +90,7 @@ class OrderRepository:
         rs = session.execute(query).fetchall()
         return rs
 
-    def update_product_quantity(self, product_id: int):
-        query = f"""UPDATE products 
-                   	SET quantity = (SELECT 
-                    (p.quantity - oi.quantity) 
-                    FROM order_items oi
-                    JOIN products p
-                    ON oi.product_id = p.product_id
-                    WHERE p.product_id = {product_id})
-                    WHERE product_id = {product_id}
-                   returning *;"""
-        session: Session = SessionLocal()
-        rs = session.execute(query).fetchone()
-        session.commit()
-        return rs
+
 
     def delete_item_in_cart_items_repo(self, customer_id: int) -> Row:
         session: Session = SessionLocal()

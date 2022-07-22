@@ -88,3 +88,18 @@ class ProductRepository:
         session.commit()
         return rs
 
+    def update_product_quantity(self, product_id: int) -> Row:
+        query = f"""UPDATE products 
+                    SET quantity = (SELECT 
+                    (p.quantity - SUM(oi.quantity)) 
+                    FROM order_items oi
+                    JOIN products p
+                    ON oi.product_id = p.product_id
+                    WHERE p.product_id = {product_id}
+                    group by p.quantity)
+                    WHERE product_id = {product_id}
+                    Returning *"""
+        session: Session = SessionLocal()
+        rs = session.execute(query).fetchone()
+        session.commit()
+        return rs

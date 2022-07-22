@@ -73,12 +73,13 @@ class CartRepository:
         session.commit()
         return rs
 
-    def delete_item_in_cart_items_repo(self, cart_items_id: int) -> Row:
+    def delete_item_in_cart_items_repository(self, customer_id: int):
         session: Session = SessionLocal()
-        query = f"""
-        DELETE FROM cart_items 
-        WHERE cart_items_id = {cart_items_id}
-        RETURNING *"""
-        rs = session.execute(query).fetchone()
+        query = f"""DELETE FROM cart_items
+                    WHERE cart_id=(
+                    SELECT cart_id FROM cart
+                    WHERE customer_id = {customer_id})
+                    RETURNING *"""
+        rs = session.execute(query)
         session.commit()
         return rs
