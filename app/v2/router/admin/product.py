@@ -105,7 +105,6 @@ def get_product(
 #                    service: ProductService = Depends(get_user)) -> DataResponse:
 #     product = ProductService().delete_product_service(product_id=product_id)
 #     return DataResponse(data=product)
-
 @router.post(
     path="/files/"
 )
