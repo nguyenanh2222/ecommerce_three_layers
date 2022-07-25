@@ -116,6 +116,8 @@ def create_file(file: bytes = File(default=None)):
     path="/uploadfiles/"
 )
 async def create_upload_file(file: UploadFile):
+    print(type(file))
+    print(file)
     if not file:
         return {"message": "No upload file sent"}
     file = await ProductService().create_upload_file_sevice(file=file)

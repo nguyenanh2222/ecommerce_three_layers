@@ -1,8 +1,10 @@
+from decimal import Decimal
 from typing import List
 from sqlalchemy.engine import Row
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
 from models.associations import CartItems
+from schemas.associations import CartItemReq
 
 
 class CartRepository:
@@ -36,7 +38,7 @@ class CartRepository:
         rs = session.execute(query)
         return rs
 
-    def insert_item_to_cart_items_repo(self, item: CartItems) -> List[Row]:
+    def insert_item_to_cart_items_repo(self, item: CartItems, cart_id: int, total_price: Decimal) -> Row:
         session: Session = SessionLocal()
         query = f"""INSERT INTO cart_items 
         (cart_id,
@@ -46,34 +48,37 @@ class CartRepository:
         product_id,
         total_price) 
         VALUES (
-        {item.cart_id},
+        {cart_id},
         '{item.product_name}', 
         {item.quantity}, 
         {item.price}, 
         {item.product_id},
-        {item.total_price})
+        {total_price})
         RETURNING *"""
         session.commit()
         rs = session.execute(query).fetchone()
         session.commit()
         return rs
 
-    def update_item_in_cart_items_repo(self, item: CartItems) -> Row:
+    def update_item_in_cart_items_repo(self, item: CartItemReq,
+                                       cart_id: int, total_price: Decimal,
+                                       cart_items_id: int) -> Row:
         session: Session = SessionLocal()
         query = f""" UPDATE cart_items
-        SET (
-        cart_id = {item.cart_id},
+        SET 
+        cart_id = {cart_id},
         product_name = '{item.product_name}',
         quantity =  {item.quantity},
-        total_price = {item.total_price},
+        total_price = {total_price},
         price = {item.price},
-        product_id {item.product_id} )
-        """
+        product_id = {item.product_id} 
+        WHERE cart_items_id = {cart_items_id} 
+        RETURNING *"""
         rs = session.execute(query).fetchone()
         session.commit()
         return rs
 
-    def delete_item_in_cart_items_repository(self, customer_id: int):
+    def delete_items_in_cart_items_repo(self, customer_id: int) -> List[Row]:
         session: Session = SessionLocal()
         query = f"""DELETE FROM cart_items
                     WHERE cart_id=(
@@ -81,5 +86,13 @@ class CartRepository:
                     WHERE customer_id = {customer_id})
                     RETURNING *"""
         rs = session.execute(query)
+        session.commit()
+        return rs
+    def delete_item_in_cart_items_repo(self, cart_item_id: int) -> Row:
+        session: Session = SessionLocal()
+        query = f"""DELETE FROM cart_items
+                            WHERE cart_items_id = {cart_item_id}
+                            RETURNING *"""
+        rs = session.execute(query).fetchone()
         session.commit()
         return rs

@@ -6,10 +6,11 @@ from pydantic import BaseModel, Field
 
 class CartItemReq(BaseModel):
 
-    cart_items_id: int = Field(...)
+    # cart_items_id: int = Field(...)
     price: float = Field(...)
     quantity: int = Field(...)
-    # total_price: int = Field(...) -> total_price tính ở lớp repo -> không yêu cầu nhập
+    # cart_id: int =Field(...)
+    # total_price: int = Field(None)
     product_id: int = Field(...)
     product_name: str = Field(...)
 

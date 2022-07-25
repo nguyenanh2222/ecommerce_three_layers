@@ -14,6 +14,5 @@ class Cart(Base):
                      primary_key=True,
                      nullable=False)
 
-    cart_items = relationship("CartItems")
 
 
