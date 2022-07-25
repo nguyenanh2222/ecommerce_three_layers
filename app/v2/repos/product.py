@@ -4,6 +4,8 @@ from typing import List
 
 from sqlalchemy import update, delete, select
 from sqlalchemy.engine import Row
+from sqlalchemy.orm import Session
+
 from db.database import SessionLocal
 from models.product import Products
 from project.core.schemas import Sort, PageResponse
@@ -37,11 +39,11 @@ class ProductRepository:
         rs = session.execute(stmt).fetchall()
         return rs
 
-    # def get_product_by_id_repos(self, product_id: int) -> Row:
-    #     session = SessionLocal()
-    #     stmt = session.select(Products).where(Products.product_id == {product_id})
-    #     rs = session.execute(stmt).fetchone()
-    #     return rs
+    def get_product_by_id_repos(self, product_id: int) -> Row:
+        session: Session = SessionLocal()
+        stmt = select(Products).where(Products.product_id == product_id)
+        rs = session.execute(stmt).fetchone()
+        return rs
     #
     # def post_product_repos(self, product: ProductReq, product_id: int) -> Row:
     #     session = SessionLocal()

@@ -17,13 +17,17 @@ class CartRepository:
         stmt = select(Cart).where(
             Cart.customer_id == customer_id)
         rs = session.execute(stmt).fetchone()
-        print(type(rs[0]))
         return rs
 
     def get_cart_items_repo(self, cart_id: int) -> List[Row]:
         session: Session = SessionLocal()
-        stmt = select(Cart, CartItems).where(
-            Cart.customer_id == cart_id).join(Cart.cart_id).returning(Cart)
+        stmt = select(CartItems.cart_items_id,
+                      CartItems.price,
+                      CartItems.product_id,
+                      CartItems.quantity,
+                      CartItems.total_price,
+                      CartItems.product_name).where(
+            CartItems.cart_id == cart_id)
         rs = session.execute(stmt).fetchall()
         return rs
 
@@ -39,6 +43,7 @@ class CartRepository:
                                      total_price=total_price)
         ).returning(CartItems)
         rs = session.execute(stmt).fetchone()
+        session.commit()
         return rs
 
     def update_item_in_cart_items_repo(self, item: CartItemReq,
@@ -47,7 +52,7 @@ class CartRepository:
         session: Session = SessionLocal()
         stmt = (
             update(CartItems).where(
-                CartItems.cart_item_id == cart_items_id
+                CartItems.cart_items_id == cart_items_id
             ).values(cart_id=cart_id,
                      product_name=item.product_name,
                      quantity=item.quantity,

@@ -15,41 +15,45 @@ class CartService(CartRepository):
         cart = CartRepository().get_cart_repo(customer_id=customer_id)
         if cart:
             cart_items = CartRepository().get_cart_items_repo(
-                cart_id=cart['cart_id'])
+                cart_id=cart['Cart'].cart_id)
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-        cart = {'customer_id': cart['customer_id'],
-                'cart_id': cart['cart_id'],
+        cart = {'customer_id': cart['Cart'].customer_id,
+                'cart_id': cart['Cart'].cart_id,
                 'cart_item': cart_items}
         return DataResponse(data=cart)
 
-    def insert_item_in_cart_items_service(self, customer_id: int, item: CartItemReq):
-        cart = CartRepository().get_cart_repo(customer_id=customer_id)
-        if cart:
-            cart_id = cart['cart_id']
-            total_price = Decimal(item.price * item.quantity)
-            item = CartRepository().insert_item_to_cart_items_repo(
-                item=CartItems(
-                    product_name=item.product_name,
-                    quantity=item.quantity,
-                    price=item.price,
-                    product_id=item.product_id,
-                ),
-                cart_id=cart_id,
-                total_price=total_price,
-
-            )
-        else:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-
-    def update_item_in_cart_items_service(self, customer_id: int,
-                                          item: CartItemReq,
-                                          cart_items_id: int):
+    def insert_item_in_cart_items_service(self, customer_id: int, item: CartItemReq) -> DataResponse:
         product = ProductRepository().get_product_by_id_repos(item.product_id)
         if product:
             cart = CartRepository().get_cart_repo(customer_id=customer_id)
             if cart:
-                cart_id = cart['cart_id']
+                cart_id = cart['Cart'].cart_id
+                total_price = Decimal(item.price * item.quantity)
+                item = CartRepository().insert_item_to_cart_items_repo(
+                    item=CartItems(
+                        product_name=item.product_name,
+                        quantity=item.quantity,
+                        price=item.price,
+                        product_id=item.product_id,
+                    ),
+                    cart_id=cart_id,
+                    total_price=total_price,
+
+                )
+                return DataResponse(data=item)
+            else:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    def update_item_in_cart_items_service(self, customer_id: int,
+                                          item: CartItemReq,
+                                          cart_items_id: int) -> DataResponse:
+        product = ProductRepository().get_product_by_id_repos(item.product_id)
+        if product:
+            cart = CartRepository().get_cart_repo(customer_id=customer_id)
+            if cart:
+                cart_id = cart['Cart'].cart_id
                 total_price = Decimal(item.price * item.quantity)
                 item = CartRepository().update_item_in_cart_items_repo(
                     item=CartItemReq(
@@ -62,6 +66,7 @@ class CartService(CartRepository):
                     total_price=total_price,
                     cart_items_id=cart_items_id,
                 )
+                return DataResponse(data=item)
             else:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

@@ -1,6 +1,8 @@
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
+
+from app.v2.repos.product import ProductRepository
 from app.v2.router.admin.permission import get_user
 from app.v2.service.customer.cart import CartService
 from project.core.schemas import DataResponse
@@ -41,8 +43,8 @@ def post_item_in_cart_items(customer_id: int, item: CartItemReq, service=Depends
 def put_item_in_cart_items(customer_id: int,
                            item: CartItemReq,
                            cart_items_id: int,
-                           service=Depends(get_user)):
-    cart_item = CartService().update_item_in_cart_items_service(
+                           service=Depends(get_user)) -> DataResponse:
+    item = CartService().update_item_in_cart_items_service(
         customer_id=customer_id,
         item=CartItemReq(
             product_name=item.product_name,
@@ -52,7 +54,7 @@ def put_item_in_cart_items(customer_id: int,
         ),
         cart_items_id=cart_items_id
     )
-    return cart_item
+    return DataResponse(data=item)
 
 
 @router.delete(
