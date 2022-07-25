@@ -1,5 +1,6 @@
+import math
 from datetime import datetime
-from typing import List
+from typing import List, Dict
 from sqlalchemy.engine import Row
 from sqlalchemy.orm import Session
 from db.database import SessionLocal
@@ -16,12 +17,15 @@ class OrderRepository:
                        order_id: int,
                        product_name: str,
                        sort_direction: Sort.Direction,
-                       ) -> List[Row]:
+                       ) -> Dict:
         query = f"""
-    SELECT oi.order_id, oi.product_name, o.customer_id
+    SELECT o.order_id, oi.product_name, o.customer_id
     FROM ecommerce.orders o
     JOIN ecommerce.order_items oi 
-    ON o.order_id = oi.order_id"""
+    ON o.order_id = oi.order_id
+    JOIN ecommerce.customers c
+    ON o.customer_id = c.customer_id
+    """
         parameters = [order_id, product_name, customer_name]
         for parameter in parameters:
             if parameter:
@@ -30,7 +34,7 @@ class OrderRepository:
         if order_id:
             query += f" o.order_id = {order_id} AND"
         if customer_name:
-            query += f" o.customer_id = {customer_name} AND"
+            query += f" c.name = '{customer_name}' AND"
         if product_name:
             query += f" product_name LIKE '%{product_name}%' AND"
         if query.endswith("AND"):
@@ -38,9 +42,17 @@ class OrderRepository:
         if sort_direction:
             query += f" ORDER BY time_open {sort_direction}"
         session: Session = SessionLocal()
+        rs = session.execute(query).fetchall()
+        total_page = math.ceil(len(rs) / size)
+        total_items = len(rs)
         query += f" LIMIT {size} OFFSET {(page - 1) * size}"
         rs = session.execute(query).fetchall()
-        return rs
+        current_page = page
+        result = {'data': rs,
+                  'total_page': total_page,
+                  'total_items': total_items,
+                  'current_page': current_page}
+        return result
 
     def change_status_repos(self,
                             order_id: int,
@@ -89,8 +101,6 @@ class OrderRepository:
         session: Session = SessionLocal()
         rs = session.execute(query).fetchall()
         return rs
-
-
 
     def delete_item_in_cart_items_repo(self, customer_id: int) -> Row:
         session: Session = SessionLocal()

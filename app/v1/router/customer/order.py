@@ -38,12 +38,10 @@ def get_order(
         customer_name=customer_name,
         sort_direction=sort_direction
     )
-    return PageResponse(
-        data=orders.data,
-        total_page=orders.total_page,
-        total_items=orders.total_items,
-        current_page=orders.current_page
-    )
+    return PageResponse(data=orders.data,
+                        total_page=orders.total_page,
+                        total_items=orders.total_items,
+                        current_page=orders.current_page)
 
 @router.put(
     path="/{order_id}",

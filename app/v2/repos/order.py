@@ -1,7 +1,6 @@
 import math
 from datetime import datetime
-from typing import List
-
+from typing import List, Dict
 from sqlalchemy import select, update
 from sqlalchemy.engine import Row
 from sqlalchemy.orm import Session
@@ -20,9 +19,9 @@ class OrderRepository:
                        order_id: int,
                        product_name: str,
                        sort_direction: Sort.Direction,
-                       ) -> PageResponse:
-        session = SessionLocal()
-        stmt = session.select(Orders)
+                       ) -> Dict:
+        session : Session = SessionLocal()
+        stmt = select(Orders)
         if order_id:
             stmt = stmt.where(Orders.order_id == order_id)
         if customer_name:
@@ -33,17 +32,17 @@ class OrderRepository:
             stmt = stmt.order_by(Orders.created_time)
         if sort_direction == 'desc':
             stmt = stmt.order_by(Orders.created_time).desc()
-        total = stmt.scalars().all()
-        total_page = math.ceil(len(total) / size)
-        total_items = len(total)
+        rs = session.execute(stmt).fetchall()
+        total_page = math.ceil(len(rs) / size)
+        total_items = len(rs)
         if page and size is not None:
             stmt.offset((page - 1) * size).limit(size)
         current_page = page
-        result = stmt.all()
-        return PageResponse(data=result,
-                            total_page=total_page,
-                            total_items=total_items,
-                            current_page=current_page)
+        result = {'data': rs,
+                  'total_page': total_page,
+                  'total_items': total_items,
+                  'current_page': current_page}
+        return result
 
     def change_status_repos(self, order_id: int,
                             next_status: EOrderStatus) -> Row:
@@ -108,4 +107,3 @@ class OrderRepository:
     #     rs = session.execute(query).fetchone()
     #     session.commit()
     #     return rs
-
