@@ -6,14 +6,13 @@ from project.core.schemas import DataResponse
 from schemas.associations import CartItemReq
 
 
-
-
 class CartService(CartRepository):
 
-    def get_cart_service(self, customer_id: int)-> DataResponse:
+    def get_cart_service(self, customer_id: int) -> DataResponse:
         cart = CartRepository().get_cart_repo(customer_id=customer_id)
         if cart:
-            cart_items = CartRepository().get_cart_items_repo(cart_id=cart['cart_id'])
+            cart_items = CartRepository().get_cart_items_repo(
+                cart_id=cart['cart_id'])
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         cart = {'customer_id': cart['customer_id'],
@@ -21,20 +20,21 @@ class CartService(CartRepository):
                 'cart_item': cart_items}
         return DataResponse(data=cart)
 
-    def insert_item_in_cart_items_service(self, customer_id: int, item: CartItemReq):
+    def insert_item_in_cart_items_service(
+            self, customer_id: int, item: CartItemReq):
         cart = CartRepository().get_cart_repo(customer_id=customer_id)
         if cart:
             cart_id = cart['cart_id']
             total_price = item.price * item.quantity
             cart_items = CartRepository().insert_item_to_cart_items_repo(
-                                                                 item=CartItems(
-                                                                     cart_id=cart_id,
-                                                                     product_name=item.product_name,
-                                                                     quantity=item.quantity,
-                                                                     price=item.price,
-                                                                     product_id=item.product_id,
-                                                                     total_price=total_price)
-                                                                 )
+                item=CartItems(
+                    cart_id=cart_id,
+                    product_name=item.product_name,
+                    quantity=item.quantity,
+                    price=item.price,
+                    product_id=item.product_id,
+                    total_price=total_price)
+            )
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
@@ -43,15 +43,15 @@ class CartService(CartRepository):
         if cart:
             cart_id = cart['cart_id']
             total_price = item.price * item.quantity
-            cart_items = CartRepository().update_item_in_cart_items_repo(
-                                                                 item=CartItems(
-                                                                     cart_id=cart_id,
-                                                                     product_name=item.product_name,
-                                                                     quantity=item.quantity,
-                                                                     price=item.price,
-                                                                     product_id=item.product_id,
-                                                                     total_price=total_price)
-                                                                 )
+            _cart_items = CartRepository().update_item_in_cart_items_repo(
+                item=CartItems(
+                    cart_id=cart_id,
+                    product_name=item.product_name,
+                    quantity=item.quantity,
+                    price=item.price,
+                    product_id=item.product_id,
+                    total_price=total_price)
+            )
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
@@ -61,6 +61,3 @@ class CartService(CartRepository):
             cart_items.delete_item_in_cart_items_repo(cart_items_id=cart_items_id)
         else:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-
-
-
